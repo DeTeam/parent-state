@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { QuestionPage } from "./QuestionPage";
+import { QuestionPage } from "./components/QuestionPage";
 
 class App extends React.Component {
   constructor(props) {
