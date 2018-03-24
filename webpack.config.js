@@ -12,7 +12,7 @@ module.exports = {
     filename: "bundle.js"
   },
   module: {
-    rules: [{ test: /\.jsx$/, use: "babel-loader" }]
+    rules: [{ test: /\.jsx?$/, use: "babel-loader" }]
   },
   plugins: [new HtmlWebpackPlugin()]
 };

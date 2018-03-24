@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import { QuestionPage } from "./components/QuestionPage";
+import questions from "./data";
 
 class App extends React.Component {
   constructor(props) {
@@ -14,9 +15,7 @@ class App extends React.Component {
 
   render() {
     // TODO: take if from state
-    const currentQuestion = {
-      question: "Which sports do you like?"
-    };
+    const currentQuestion = questions[this.state.currentStep];
 
     return (
       <div className="questions">
