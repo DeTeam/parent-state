@@ -9,17 +9,46 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      currentStep: 0
+      currentStep: 0,
+      answers: []
     };
+
+    this.nextQuestion = this.nextQuestion.bind(this);
+    this.previousQuestion = this.previousQuestion.bind(this);
+  }
+
+  nextQuestion() {
+    // TODO: add check out of boundaries + mandatory response check
+    this.setState({
+      currentStep: this.state.currentStep + 1
+    });
+  }
+  previousQuestion() {
+    // TODO: add check out of boundaries
+    this.setState({
+      currentStep: this.state.currentStep - 1
+    });
   }
 
   render() {
     // TODO: take if from state
-    const currentQuestion = questions[this.state.currentStep];
+    const currentQuestion = this.props.questions[this.state.currentStep];
+    const currentAnswer = this.state.answers[this.state.currentStep];
+
+    const hasNextPage =
+      this.state.currentStep + 1 < this.props.questions.length;
+    const hasPreviousPage = this.state.currentStep > 0;
 
     return (
       <div className="questions">
-        <QuestionPage question={currentQuestion} />
+        <QuestionPage
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          question={currentQuestion}
+          answer={currentAnswer}
+          nextQuestion={this.nextQuestion}
+          previousQuestion={this.previousQuestion}
+        />
       </div>
     );
   }
@@ -29,7 +58,7 @@ function run() {
   const node = document.createElement("div");
   document.body.appendChild(node);
 
-  ReactDOM.render(<App />, node);
+  ReactDOM.render(<App questions={questions} />, node);
 }
 
 run();

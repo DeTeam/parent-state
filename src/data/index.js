@@ -1,2 +1,2 @@
-const questions = [require("./sport")];
+const questions = [require("./sport"), require("./sport"), require("./sport")];
 export default questions;
