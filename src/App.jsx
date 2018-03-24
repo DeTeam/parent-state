@@ -1,15 +1,21 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import {
+  HashRouter as Router,
+  Route,
+  Redirect,
+  Switch,
+  withRouter
+} from "react-router-dom";
 
 import { QuestionPage } from "./components/QuestionPage";
 import questions from "./data";
 
-class App extends React.Component {
+class Wizard extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      currentStep: 0,
       answers: []
     };
 
@@ -19,36 +25,63 @@ class App extends React.Component {
 
   nextQuestion() {
     // TODO: add check out of boundaries + mandatory response check
-    this.setState({
-      currentStep: this.state.currentStep + 1
-    });
+    const nextStep = this.getCurrentStep() + 1;
+    this.moveToStep(nextStep);
   }
+
   previousQuestion() {
-    // TODO: add check out of boundaries
-    this.setState({
-      currentStep: this.state.currentStep - 1
-    });
+    const previousStep = this.getCurrentStep() - 1;
+    this.moveToStep(previousStep);
+  }
+
+  moveToStep(step) {
+    this.props.history.push(`/questions/${step}`);
+  }
+
+  getCurrentStep() {
+    return parseInt(this.props.match.params.id, 10) || 1;
   }
 
   render() {
-    // TODO: take if from state
-    const currentQuestion = this.props.questions[this.state.currentStep];
-    const currentAnswer = this.state.answers[this.state.currentStep];
+    const currentStep = this.getCurrentStep();
 
-    const hasNextPage =
-      this.state.currentStep + 1 < this.props.questions.length;
-    const hasPreviousPage = this.state.currentStep > 0;
+    const index = currentStep - 1;
+    const currentQuestion = this.props.questions[index];
+    const currentAnswer = this.state.answers[index];
+
+    const hasNextPage = index + 1 < this.props.questions.length;
+    const hasPreviousPage = index > 0;
 
     return (
+      <QuestionPage
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        question={currentQuestion}
+        answer={currentAnswer}
+        nextQuestion={this.nextQuestion}
+        previousQuestion={this.previousQuestion}
+      />
+    );
+  }
+}
+
+const WizardContainer = withRouter(Wizard);
+
+class App extends React.Component {
+  render() {
+    return (
       <div className="questions">
-        <QuestionPage
-          hasNextPage={hasNextPage}
-          hasPreviousPage={hasPreviousPage}
-          question={currentQuestion}
-          answer={currentAnswer}
-          nextQuestion={this.nextQuestion}
-          previousQuestion={this.previousQuestion}
-        />
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              <Redirect to="/questions/1" />
+            </Route>
+            <Route
+              path="/questions/:id"
+              render={() => <WizardContainer {...this.props} />}
+            />
+          </Switch>
+        </Router>
       </div>
     );
   }
