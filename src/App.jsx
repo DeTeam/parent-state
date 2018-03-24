@@ -15,16 +15,13 @@ class Wizard extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      answers: []
-    };
-
     this.nextQuestion = this.nextQuestion.bind(this);
     this.previousQuestion = this.previousQuestion.bind(this);
   }
 
   nextQuestion() {
     // TODO: add check out of boundaries + mandatory response check
+    // TODO: update current answer
     const nextStep = this.getCurrentStep() + 1;
     this.moveToStep(nextStep);
   }
@@ -47,7 +44,7 @@ class Wizard extends React.Component {
 
     const index = currentStep - 1;
     const currentQuestion = this.props.questions[index];
-    const currentAnswer = this.state.answers[index];
+    const currentAnswer = this.props.answers[index];
 
     const hasNextPage = index + 1 < this.props.questions.length;
     const hasPreviousPage = index > 0;
@@ -68,6 +65,25 @@ class Wizard extends React.Component {
 const WizardContainer = withRouter(Wizard);
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      answers: []
+    };
+
+    this.updateAnswer = this.updateAnswer.bind(this);
+  }
+
+  updateAnswer(step, answer) {
+    const newAnswers = this.state.answer.slice();
+    newAnswers[step] = answer;
+
+    this.setState({
+      answers: newAnswers
+    });
+  }
+
   render() {
     return (
       <div className="questions">
@@ -78,7 +94,13 @@ class App extends React.Component {
             </Route>
             <Route
               path="/questions/:id"
-              render={() => <WizardContainer {...this.props} />}
+              render={() => (
+                <WizardContainer
+                  {...this.props}
+                  {...this.state}
+                  updateAnswer={this.updateAnswer}
+                />
+              )}
             />
           </Switch>
         </Router>
